@@ -1,9 +1,7 @@
-//
-// Created by desk on 6/9/17.
-//
-
 #ifndef MACROLESS_H
 #define MACROLESS_H
+
+#include "logger.h"
 
 #include <functional>
 #include <iostream>
@@ -11,7 +9,8 @@
 #include <sstream>
 #include <vector>
 
-namespace minilib
+
+namespace devlib
 {
 namespace testing
 {
@@ -41,31 +40,15 @@ namespace testing
     // Typedefs.
     typedef std::unique_ptr<test> test_ptr;
     typedef std::vector<std::unique_ptr<test>> test_vector;
+    typedef std::vector< std::function<void()> > collector_vector;
 
     // Exception to throw when a test fails.
     class test_fail: std::exception {};
 
-    // Tells where the output goes.
-    extern std::ofstream file_output;
-    extern bool has_file_output;
+    // Function to run a std::vector of tests collected by a std::vector of functions. 
+    bool run(int argc, char** argv, const collector_vector& collectors, const test_vector& tests);
 
-    // Get the ostream to output to.
-    std::ostream& get_output();
-
-    // Function to run a std::vector of tests.
-    bool run(int argc, char** argv, std::function<void()> collector, const test_vector& tests);
-
-    // Message / fail message creation.
-    template<typename T>
-    void strstr_append(std::stringstream& ss, const T& t){
-        ss << t;
-    }
-
-    template<typename T, typename... Args>
-    void strstr_append(std::stringstream& ss, const T& t, const Args&... args) {
-        ss << t << " ";
-        strstr_append(ss,args...);
-    }
+    
 
     // Fail message.
     template<typename... Args>
